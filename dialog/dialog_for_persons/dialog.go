@@ -3,6 +3,7 @@ package dialog_for_person
 import (
 	f "fmt"
 	p "games/hero_info/persons"
+	os "os"
 	t "time"
 )
 
@@ -16,7 +17,8 @@ func Dialog_1(P *p.Person) {
 	f.Printf("Прекрасно %s! Сколько тебе лет? ", P.Name)
 	f.Scan(&P.Age)
 	if P.Age < 10 {
-		f.Printf("%d, изивини, но ты слишком мал, для данной игры", P.Age)
+		f.Printf("%d, изивини, но ты слишком мал, для данной игры\n", P.Age)
+		os.Exit(0)
 
 	} else {
 		f.Printf("Приятно было познакомиться, %s, аххх, прости...\nЗабыл представиться, совсем вылетело из головы...\nМеня зовут Люцифер, я твой помощник в этом диком мире\n!", P.Name)
