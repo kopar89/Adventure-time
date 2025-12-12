@@ -12,6 +12,7 @@ type Map struct {
 	grid       [][]rune
 	heroPos    struct{ X, Y int }
 	enemies    []struct{ X, Y int }
+	medkits    []struct{ X, Y int } // ХИЛКИ
 }
 
 func (m *Map) Generate() {
@@ -58,8 +59,24 @@ func (m *Map) PlaceEnemies(count int) {
 		for {
 			x := rand.Intn(m.rows)
 			y := rand.Intn(m.cols)
-			if m.grid[x][y] != '≈' && m.grid[x][y] != '▲' && (x != m.heroPos.X || y != m.heroPos.Y) {
+			if m.grid[x][y] != '≈' && m.grid[x][y] != '▲' &&
+				(x != m.heroPos.X || y != m.heroPos.Y) {
+
 				m.enemies = append(m.enemies, struct{ X, Y int }{x, y})
+				break
+			}
+		}
+	}
+}
+
+func (m *Map) PlaceMedkits(count int) {
+	m.medkits = []struct{ X, Y int }{}
+	for k := 0; k < count; k++ {
+		for {
+			x := rand.Intn(m.rows)
+			y := rand.Intn(m.cols)
+			if m.grid[x][y] != '≈' && m.grid[x][y] != '▲' {
+				m.medkits = append(m.medkits, struct{ X, Y int }{x, y})
 				break
 			}
 		}
@@ -73,6 +90,7 @@ func (m *Map) Print() {
 	blue := color.New(color.FgBlue).SprintFunc()
 	red := color.New(color.FgRed).SprintFunc()
 	yellow := color.New(color.FgYellow).SprintFunc()
+	cyan := color.New(color.FgCyan).SprintFunc() 
 
 	for i := 0; i < m.rows; i++ {
 		for j := 0; j < m.cols; j++ {
@@ -91,6 +109,18 @@ func (m *Map) Print() {
 				}
 			}
 			if enemyHere {
+				continue
+			}
+
+			kit := false
+			for _, k := range m.medkits {
+				if k.X == i && k.Y == j {
+					fmt.Print(cyan("+"))
+					kit = true
+					break
+				}
+			}
+			if kit {
 				continue
 			}
 
@@ -125,7 +155,8 @@ func (m *Map) MoveHero(dx, dy int, hero *p.Hero, enemies []*p.Enemy) {
 
 	for i, e := range m.enemies {
 		if e.X == nx && e.Y == ny {
-			if i >= 0 && i < len(enemies) && enemies[i] != nil {
+
+			if i >= 0 && i < len(enemies) {
 				Fight(hero, enemies[i])
 
 				if enemies[i].Health <= 0 {
@@ -134,11 +165,28 @@ func (m *Map) MoveHero(dx, dy int, hero *p.Hero, enemies []*p.Enemy) {
 					enemies[len(enemies)-1] = nil
 					enemies = enemies[:len(enemies)-1]
 				}
-
-			} else {
-				fmt.Println("Ошибка: неверный индекс врага при столкновении.")
 			}
 			return
+		}
+	}
+
+	for i, k := range m.medkits {
+		if k.X == nx && k.Y == ny {
+
+			fmt.Println("🩹 Герой нашёл хилку! +40 HP +20 Mana")
+
+			hero.Health += 40
+			if hero.Health > 150 {
+				hero.Health = 150
+			}
+
+			hero.Mana += 20
+			if hero.Mana > 100 {
+				hero.Mana = 100
+			}
+
+			m.medkits = append(m.medkits[:i], m.medkits[i+1:]...)
+			break
 		}
 	}
 
@@ -155,13 +203,16 @@ func Fight(hero *p.Hero, enemy *p.Enemy) {
 			enemy.Health = 0
 		}
 
-		fmt.Printf("%s наносит удар (%d). У %s осталось %d HP\n",
+		fmt.Printf("%s ударил (%d). У %s осталось %d HP\n",
 			hero.Name, hero.Damage, enemy.Name, enemy.Health)
 
+		hero.Mana += 10
+		if hero.Mana > 100 {
+			hero.Mana = 100
+		}
+
 		if enemy.Health <= 0 {
-			fmt.Println("✨ Враг повержен!")
-			fmt.Print(hero.Info())
-			fmt.Print("\n")
+			fmt.Println("✨ Враг побеждён!")
 			return
 		}
 
@@ -170,12 +221,11 @@ func Fight(hero *p.Hero, enemy *p.Enemy) {
 			hero.Health = 0
 		}
 
-		fmt.Printf("%s атакует (%d). У героя %s осталось %d HP\n",
-			enemy.Name, enemy.Damage, hero.Name, hero.Health)
+		fmt.Printf("%s атакует (%d). У героя осталось %d HP\n",
+			enemy.Name, enemy.Damage, hero.Health)
 
 		if hero.Health <= 0 {
 			fmt.Println("💀 Герой погиб...")
-			hero.Info()
 			return
 		}
 	}
