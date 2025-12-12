@@ -5,6 +5,8 @@ import (
 	p "games/hero_info/persons"
 	os "os"
 	t "time"
+
+	"github.com/fatih/color"
 )
 
 func Dialog_1(P *p.Person) {
@@ -17,16 +19,15 @@ func Dialog_1(P *p.Person) {
 	f.Printf("Прекрасно %s! Сколько тебе лет? ", P.Name)
 	f.Scan(&P.Age)
 	if P.Age < 10 {
-		f.Printf("%d, изивини, но ты слишком мал, для данной игры\n", P.Age)
+		f.Printf("%s, изивини, но ты слишком мал, для данной игры\n", P.Name)
 		os.Exit(0)
 
 	} else {
-		f.Printf("Приятно было познакомиться, %s, аххх, прости...\nЗабыл представиться, совсем вылетело из головы...\nМеня зовут Люцифер, я твой помощник в этом диком мире\n!", P.Name)
+		f.Printf("Приятно было познакомиться, %s, аххх, прости...\nЗабыл представиться, совсем вылетело из головы...\nМеня зовут Люцифер, я твой помощник в этом диком мире!\n", P.Name)
 	}
 }
 
 func Dialog_2(P *p.Person) {
-	f.Print("\nКак можешь заметить, что карта достаточно велика, на ней много мест для исследования и приключений!\n")
 	f.Print("Но для начала тебе нужно выбрать героя, за которого ты будешь играть!\n")
 	t.Sleep(3 * t.Second)
 	f.Print("У нас есть 4 героя на выбор:\n")
@@ -39,22 +40,35 @@ func Dialog_2(P *p.Person) {
 	t.Sleep(2 * t.Second)
 	f.Println(p.Hero4.Info())
 	t.Sleep(2 * t.Second)
-	f.Println("Кого из них ты выбираешь? (введи цифру от 1 до 4):\t")
-	var choice int
-	f.Scan(&choice)
+	f.Print("Кого из них ты выбираешь? (введи цифру от 1 до 4): ")
+}
 
-	switch choice {
-	case 1:
-		f.Printf("Отличный выбор, %s! Ты выбрал Воина-рыцаря. Пусть твой путь будет славным и полным приключений!\n", P.Name)
-	case 2:
-		f.Printf("Отличный выбор, %s! Ты выбрал Лесного эльфа-лучницу. Пусть твой путь будет славным и полным приключений!\n", P.Name)
-	case 3:
-		f.Printf("Отличный выбор, %s! Ты выбрал Мага-волшебника. Пусть твой путь будет славным и полным приключений!\n", P.Name)
-	case 4:
-		f.Printf("Отличный выбор, %s! Ты выбрал Варвара-берсерка. Пусть твой путь будет славным и полным приключений!\n", P.Name)
-	default:
-		f.Printf("Похоже, ты не выбрал ни одного из героев, %s. Попробуй снова и выбери одного из доступных героев!\n", P.Name)
-	}
+func Dialog_3(P *p.Person) {
 
-	f.Println("Удачи в твоих приключениях!")
+	green := color.New(color.FgGreen).SprintFunc()
+	darkGreen := color.New(color.FgHiGreen).SprintFunc()
+	gray := color.New(color.FgHiBlack).SprintFunc()
+	blue := color.New(color.FgBlue).SprintFunc()
+	red := color.New(color.FgRed).SprintFunc()
+	yellow := color.New(color.FgYellow).SprintFunc()
+	f.Print("Это трава, по ней можешь спокойно ходить, не переживай ", green("░"), darkGreen("▓"), "\n")
+	t.Sleep(2 * t.Second)
+
+	f.Print("А это горы, по ним ходить нельзя, они слишком крутые ", gray("▲"), "\n")
+	t.Sleep(2 * t.Second)
+
+	f.Print("А это вода, по ней тоже ходить нельзя, утонешь ", blue("≈"), "\n")
+	t.Sleep(2 * t.Second)
+
+	f.Print("Это аптечка, она тебе обязательно понадобиться ", green("A"), "\n")
+	t.Sleep(2 * t.Second)
+
+	f.Print("Вот так выглядят твои враги ", red("E"), ", будь осторожен с ними!\n")
+	t.Sleep(2 * t.Second)
+
+	f.Print("А это ты ", yellow("H"), ", твоя задача выжить в этом мире и победить всех врагов!\n")
+	t.Sleep(2 * t.Second)
+
+	f.Print("Удачи в твоих приключениях!\n")
+	t.Sleep(2 * t.Second)
 }
