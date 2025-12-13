@@ -5,7 +5,6 @@ import (
 	p "games/hero_info/persons"
 	os "os"
 	t "time"
-
 	"github.com/fatih/color"
 )
 
@@ -32,14 +31,21 @@ func Dialog_2(P *p.Person) {
 	t.Sleep(3 * t.Second)
 	f.Print("У нас есть 4 героя на выбор:\n")
 	t.Sleep(2 * t.Second)
-	f.Println(p.Hero1.Info())
-	t.Sleep(2 * t.Second)
-	f.Println(p.Hero2.Info())
-	t.Sleep(2 * t.Second)
-	f.Println(p.Hero3.Info())
-	t.Sleep(2 * t.Second)
-	f.Println(p.Hero4.Info())
-	t.Sleep(2 * t.Second)
+
+	factory := &p.Factory1{}
+
+	heroes := []p.HeroInterface{
+		factory.CreateHero(1),
+		factory.CreateHero(2),
+		factory.CreateHero(3),
+		factory.CreateHero(4),
+	}
+
+	for i, hero := range heroes {
+		f.Printf("%d: %s\n", i+1, hero.GetInfo())
+		t.Sleep(2 * t.Second)
+	}
+
 	f.Print("Кого из них ты выбираешь? (введи цифру от 1 до 4): ")
 }
 
