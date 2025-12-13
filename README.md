@@ -24,5 +24,5 @@ Adventure Time — это консольная RPG игра, написанна�
 
 # Диагарамма классов на момент 13.12.2025
 
-<img width="2104" height="848" alt="game_uml" src="https://github.com/user-attachments/assets/9a7a837a-9204-475a-a413-e5f6a12b1144" />
+<img width="1294" height="1182" alt="uml_games" src="https://github.com/user-attachments/assets/a29cd990-ee80-43b5-a3ae-2da01e40f058" />
 
