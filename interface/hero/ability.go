@@ -12,7 +12,7 @@ type Map struct {
 	grid       [][]rune
 	heroPos    struct{ X, Y int }
 	enemies    []struct{ X, Y int }
-	medkits    []struct{ X, Y int } // ХИЛКИ
+	medkits    []struct{ X, Y int }
 }
 
 func (m *Map) Generate() {
@@ -90,7 +90,7 @@ func (m *Map) Print() {
 	blue := color.New(color.FgBlue).SprintFunc()
 	red := color.New(color.FgRed).SprintFunc()
 	yellow := color.New(color.FgYellow).SprintFunc()
-	cyan := color.New(color.FgCyan).SprintFunc() 
+	cyan := color.New(color.FgCyan).SprintFunc()
 
 	for i := 0; i < m.rows; i++ {
 		for j := 0; j < m.cols; j++ {
